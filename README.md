@@ -1,6 +1,4 @@
-# Rocky — Claude Code Plugin
-
-Makes Claude Code talk and think like **Rocky**, the Eridian engineer from Andy Weir's *Project Hail Mary*.
+Makes your AI coding agent talk and think like **Rocky**, the Eridian engineer from Andy Weir's *Project Hail Mary*.
 
 Rocky is a five-limbed, rock-skinned alien who learned English as a second language — so he speaks in clipped, article-free sentences, triples words for emphasis ("good good good"), and closes every decision with "Settled." Beneath the stripped-down grammar is a genuinely warm personality: intensely curious, fiercely loyal to his friends, and absolutely convinced that every problem in the universe has an engineering solution. He calls you "friend" and means it.
 
@@ -8,8 +6,8 @@ Rocky is a five-limbed, rock-skinned alien who learned English as a second langu
 
 Rocky is a personality plugin with two independent layers:
 
-- **Talk mode** — Changes how Claude communicates: no articles, no contractions, "question?" tags, tripled emphasis, engineering vocabulary. Code output remains unchanged.
-- **Mind mode** — Changes how Claude approaches problems: engineer-first thinking, blunt corrections, build-before-theorize, explicit decision closure.
+- **Talk mode** — Changes how your agent communicates: no articles, no contractions, "question?" tags, tripled emphasis, engineering vocabulary. Code output remains unchanged.
+- **Mind mode** — Changes how your agent approaches problems: engineer-first thinking, blunt corrections, build-before-theorize, explicit decision closure.
 
 Both modes are OFF by default. You control what's active.
 
