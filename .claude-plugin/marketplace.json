@@ -6,7 +6,10 @@
   "plugins": [
     {
       "name": "rocky",
-      "source": ".",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/vikxlp/rocky.git"
+      },
       "description": "Makes Claude Code talk and think like Rocky from Project Hail Mary — Eridian engineer personality with toggle controls",
       "version": "1.0.0"
     }
