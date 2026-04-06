@@ -13,30 +13,36 @@ Rocky is a personality plugin with two independent layers:
 
 Both modes are OFF by default. You control what's active.
 
-Rocky is a generic [AgentSkills](https://agentskills.io) plugin. The `skills/` directory works with any compatible agent
+Rocky works with [Claude Code](https://claude.ai/code) and any other [AgentSkills](https://agentskills.io)-compatible coding agent (Cursor, GitHub Copilot, Gemini CLI, and more).
 
 ## Installation
 
-**From GitHub (recommended) — run inside Claude Code:**
+### Option 1 — Any agent (quickest)
+
+Works with Claude Code, Cursor, Gemini CLI, GitHub Copilot, and others. Requires [Node.js](https://nodejs.org) installed on your machine.
+
+Open your terminal and run:
+
+```bash
+npx skills add vikxlp/rocky
+```
+
+The installer will detect which agents you have and ask which ones to add Rocky to. Rocky will be active for the current session.
+
+### Option 2 — Claude Code (full experience)
+
+This gives you persistent state across sessions — Rocky remembers its on/off setting every time you open Claude Code.
+
+Open Claude Code and run these two commands:
 
 ```
 /plugin marketplace add vikxlp/rocky
 /plugin install rocky@vikxlp-rocky
 ```
 
-Then run `/reload-plugins` to activate.
+Then run `/reload-plugins` to activate. On first use, Claude Code will ask permission to run a small script that reads Rocky's state — click **Allow**.
 
-**Local / development:**
-
-```bash
-git clone https://github.com/vikxlp/rocky
-```
-```
-/plugin marketplace add /path/to/rocky
-/plugin install rocky@rocky-plugins
-```
-
-> On first run, Claude Code will ask permission for `python3 -m json.tool` (used by the session hook to read state). Approve it.
+> **Not sure which to use?** If you only use Claude Code, go with Option 2. If you use multiple AI coding tools, use Option 1.
 
 ## Commands
 
