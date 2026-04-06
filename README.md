@@ -35,7 +35,7 @@ Open Claude Code and run these two commands:
 
 ```
 /plugin marketplace add vikxlp/rocky
-/plugin install rocky@vikxlp-rocky
+/plugin install rocky@rocky-plugins
 ```
 
 Then run `/reload-plugins` to activate. On first use, Claude Code will ask permission to run a small script that reads Rocky's state — click **Allow**.
