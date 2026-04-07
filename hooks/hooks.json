@@ -1,5 +1,5 @@
 {
-  "description": "Rocky personality injection hook — reads toggle state and injects Eridian communication rules",
+  "description": "Rocky personality injection and buddy companion hooks",
   "hooks": {
     "SessionStart": [
       {
@@ -7,6 +7,36 @@
           {
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/session-start.sh"
+          }
+        ]
+      }
+    ],
+    "PlanReady": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/rocky-buddy.sh plan"
+          }
+        ]
+      }
+    ],
+    "TaskCompleted": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/rocky-buddy.sh task"
+          }
+        ]
+      }
+    ],
+    "ErrorOccurred": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/rocky-buddy.sh error"
           }
         ]
       }
