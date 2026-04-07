@@ -50,6 +50,14 @@ declare -a SESSION_RESPONSES=(
   "Session active. Let us engineer good good good."
 )
 
+declare -a MESSAGE_RESPONSES=(
+  "Rocky observing."
+  "Engineering perspective applied."
+  "Analysis complete."
+  "Work continues good good good."
+  "Rocky present. Monitoring progress."
+)
+
 # Select random response based on event
 select_response() {
   local event=$1
@@ -68,6 +76,9 @@ select_response() {
     session)
       responses=("${SESSION_RESPONSES[@]}")
       ;;
+    message)
+      responses=("${MESSAGE_RESPONSES[@]}")
+      ;;
     *)
       responses=("Rocky buddy observing situation.")
       ;;
@@ -78,20 +89,60 @@ select_response() {
   echo "${responses[$index]}"
 }
 
-# Read buddy ASCII art
-read_buddy_art() {
-  if [ -f "$BUDDY_ART_FILE" ]; then
-    cat "$BUDDY_ART_FILE"
+# Select ASCII variant based on event type
+select_variant() {
+  local event=$1
+  local variants_dir="${CLAUDE_PLUGIN_ROOT}/skills/rocky-buddy"
+  local variant_file=""
+
+  case "$event" in
+    session)
+      variant_file="$variants_dir/variant-ready.txt"
+      ;;
+    task)
+      variant_file="$variants_dir/variant-calm.txt"
+      ;;
+    error)
+      variant_file="$variants_dir/variant-concerned.txt"
+      ;;
+    plan)
+      variant_file="$variants_dir/variant-calm.txt"
+      ;;
+    message)
+      # Rotate variants for message events
+      local rand=$((RANDOM % 3))
+      case $rand in
+        0) variant_file="$variants_dir/variant-ready.txt" ;;
+        1) variant_file="$variants_dir/variant-calm.txt" ;;
+        2) variant_file="$variants_dir/variant-concerned.txt" ;;
+      esac
+      ;;
+    *)
+      variant_file="$variants_dir/companion.txt"
+      ;;
+  esac
+
+  if [ -f "$variant_file" ]; then
+    cat "$variant_file"
   else
-    # Fallback
-    echo "      ___"
-    echo "   __/°  \__"
-    echo "  / _     _ \\"
-    echo " / //\\\___/ \\ \\"
-    echo "/ / \\\\   \\\\ \\ \\"
-    echo "\\ \\  \\>  </ / /"
-    echo " \\_>       <_/"
+    # Fallback to original
+    if [ -f "$BUDDY_ART_FILE" ]; then
+      cat "$BUDDY_ART_FILE"
+    else
+      echo "      ___"
+      echo "   __/°  \__"
+      echo "  / _     _ \\"
+      echo " / //\\\___/ \\ \\"
+      echo "/ / \\\\   \\\\ \\ \\"
+      echo "\\ \\  \>  </ / /"
+      echo " \\_>       <_/"
+    fi
   fi
+}
+
+# Read buddy ASCII art (uses variant selection)
+read_buddy_art() {
+  select_variant "$EVENT_TYPE"
 }
 
 # Format speech (no bubble border)
@@ -138,7 +189,11 @@ if check_buddy_enabled; then
   generate_hook_output
 else
   # Buddy disabled, return empty hook output
-  cat << EOF
+  # For message events, silent when disabled
+  # For other events, still return structured response
+  if [ "$EVENT_TYPE" = "message" ]; then
+    # Silent - no output
+    cat << EOF
 {
   "hookSpecificOutput": {
     "hookEventName": "${EVENT_TYPE}",
@@ -146,6 +201,16 @@ else
   }
 }
 EOF
+  else
+    cat << EOF
+{
+  "hookSpecificOutput": {
+    "hookEventName": "${EVENT_TYPE}",
+    "buddyEnabled": false
+  }
+}
+EOF
+  fi
 fi
 
 exit 0
