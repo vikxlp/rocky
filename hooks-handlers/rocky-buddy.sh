@@ -31,6 +31,14 @@ declare -a ERROR_RESPONSES=(
   "Defect observed. Engineering required."
 )
 
+declare -a SESSION_RESPONSES=(
+  "Rocky here. Ready to work, friend."
+  "Observing. Session beginning."
+  "I am here. What problem need solving, question?"
+  "Ready. Building awaits."
+  "Session active. Let us engineer good good good."
+)
+
 # Select random response based on event
 select_response() {
   local event=$1
@@ -45,6 +53,9 @@ select_response() {
       ;;
     error)
       responses=("${ERROR_RESPONSES[@]}")
+      ;;
+    session)
+      responses=("${SESSION_RESPONSES[@]}")
       ;;
     *)
       responses=("Rocky buddy observing situation.")
