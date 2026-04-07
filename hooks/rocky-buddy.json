@@ -1,16 +1,6 @@
 {
-  "description": "Rocky personality injection and buddy companion hooks",
+  "description": "Rocky buddy terminal companion — displays in speech bubble on plan ready, task complete, or error",
   "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/session-start.sh"
-          }
-        ]
-      }
-    ],
     "PlanReady": [
       {
         "hooks": [
