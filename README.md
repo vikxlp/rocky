@@ -4,12 +4,13 @@ Rocky is a five-limbed, rock-skinned alien who learned English as a second langu
 
 ## What It Does
 
-Rocky is a personality plugin with two independent layers:
+Rocky is a personality plugin with three independent layers:
 
-- **Talk mode** — Changes how your agent communicates: no articles, no contractions, "question?" tags, tripled emphasis, engineering vocabulary. Code output remains unchanged.
-- **Mind mode** — Changes how your agent approaches problems: engineer-first thinking, blunt corrections, build-before-theorize, explicit decision closure.
+- **Talk mode** (`/rocky-talk`) — Changes how your agent communicates: no articles, no contractions, "question?" tags, tripled emphasis, engineering vocabulary. Code output remains unchanged.
+- **Full mode** (`/rocky`) — Everything in Talk mode, plus changes how your agent approaches problems: engineer-first thinking, blunt corrections, build-before-theorize, explicit decision closure.
+- **Buddy mode** (`/rocky-buddy`) — Displays Rocky's ASCII art and a sarcastic one-liner greeting at session start.
 
-Both modes are OFF by default. You control what's active.
+All modes are OFF by default. You control what's active.
 
 Rocky works with [Claude Code](https://claude.ai/code) and any other [AgentSkills](https://agentskills.io)-compatible coding agent (Cursor, GitHub Copilot, Gemini CLI, and more).
 
@@ -46,7 +47,9 @@ Open Claude Code and run each command separately:
 **Step 3** — Activate:
 ```
 /reload-plugins
-``` On first use, Claude Code will ask permission to run a small script that reads Rocky's state — click **Allow**.
+```
+
+On first use, Claude Code will ask permission to run a small script that reads Rocky's state — click **Allow**.
 
 > **Not sure which to use?** If you only use Claude Code, go with Option 2. If you use multiple AI coding tools, use Option 1.
 
@@ -54,9 +57,9 @@ Open Claude Code and run each command separately:
 
 | Command | What it changes |
 |---------|-----------------|
-| `/rocky [on\|off]` | Both modes together — asks for confirmation before activating |
-| `/rocky-talk [on\|off]` | Conversation style only (grammar, vocabulary, tone) |
-| `/rocky-mind [on\|off]` | Problem-solving approach only (engineer-first, blunt, decisive) |
+| `/rocky [on\|off]` | Full mode — talk style + engineering mind (asks for confirmation before activating) |
+| `/rocky-talk [on\|off]` | Talk style only (grammar, vocabulary, tone) |
+| `/rocky-buddy [on\|off]` | ASCII art companion at session start |
 | `/rocky-status` | Show current toggle states (displayed in Rocky voice if talk is on) |
 
 All commands accept `on`, `off`, or no argument (no argument toggles the current state).
@@ -67,10 +70,10 @@ All commands accept `on`, `off`, or no argument (no argument toggles the current
 
 ```
 Normal:  "I found the bug! It was a null pointer exception in the authentication module."
-Rocky:   "Found problem. Null pointer in authentication mechanism. Fix is simple."
+Rocky:   "Rocky found problem, friend. Null pointer in authentication mechanism. Fix simple."
 
 Normal:  "That's an interesting approach! I think there might be a better way."
-Rocky:   "Approach is inefficient. Better method exists. Want explanation, question?"
+Rocky:   "Approach inefficient. Better method exists. Want Rocky explain, question?"
 
 Normal:  "Sure, let's go with that plan."
 Rocky:   "Settled."
@@ -79,11 +82,21 @@ Rocky:   "Settled."
 ### Rocky Mind
 
 ```
-Normal:  "Hmm, I think this might work but I'm not entirely sure. Let me think about it more..."
-Rocky:   "I test. ... Yes. Works. Good good good."
+Normal:  "There could be several potential issues here."
+Rocky:   "Three problems. First: memory leak in auth mechanism. Second: race condition
+         in queue. Third: no error handling at boundary. Rocky fix all three."
 
-Normal:  "That approach has some potential issues we should consider."
-Rocky:   "Bad plan. Will fail at scale. Better method: use queue. Settled, question?"
+Normal:  "Maybe we should consider a different approach?"
+Rocky:   "Bad approach. Better method: decompose into two systems. Faster.
+         More robust. Settled."
+
+Normal:  "I'm sorry, but that approach won't work because..."
+Rocky:   "That not work. Tolerance exceeded on database mechanism.
+         Alternative: batch writes. More robust."
+
+Normal:  "Let me analyze this complex issue for you."
+Rocky:   "Rocky break problem into components. Three mechanisms involved.
+         Start with simplest."
 ```
 
 ## How It Works
@@ -91,6 +104,7 @@ Rocky:   "Bad plan. Will fail at scale. Better method: use queue. Settled, quest
 - **State**: Toggle state is stored in `~/.claude/rocky-state.json` — global, not per-project.
 - **Injection**: A `SessionStart` hook reads state at session start and injects the active personality rules as context.
 - **Scope**: Rocky voice applies only to conversational text — code, files, commits, and plans stay in standard English.
+- **Buddy**: When `/rocky-buddy` is on, Rocky's ASCII art and a one-liner greeting are injected into context at session start via a second `SessionStart` hook.
 
 ## Character Reference
 

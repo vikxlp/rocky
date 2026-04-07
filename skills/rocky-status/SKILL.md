@@ -5,8 +5,8 @@ license: MIT
 compatibility: Skills directory works with any AgentSkills-compatible agent. State persistence across sessions requires Claude Code; other agents report session-only state.
 metadata:
   author: vikxlp
-  version: "1.0.0"
-allowed-tools: Bash Read
+  version: "1.1.0"
+allowed-tools: Bash
 ---
 
 # Rocky Status — Display Current State
@@ -38,7 +38,6 @@ Use ON or OFF based on actual state.
 Below the status table:
 - `/rocky [on|off]` — Toggle full mode (talk + mind)
 - `/rocky-talk [on|off]` — Toggle chat style only
-- `/rocky-mind [on|off]` — Toggle engineering personality only
 
 ### 4. Voice rule
 
