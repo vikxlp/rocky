@@ -1,10 +1,21 @@
 #!/usr/bin/env bash
 
 # Rocky Buddy — Event-triggered terminal companion
-# Displays on plan ready, task complete, or error with sarcastic one-liner
+# Displays when buddy is enabled on plan ready, task complete, session start, or error
 
 EVENT_TYPE="${1:-unknown}"
 BUDDY_ART_FILE="${CLAUDE_PLUGIN_ROOT}/skills/rocky-buddy/companion.txt"
+STATE_FILE="$HOME/.claude/rocky-state.json"
+
+# Check if buddy is enabled
+check_buddy_enabled() {
+  if [ ! -f "$STATE_FILE" ]; then
+    return 1
+  fi
+
+  python3 -c "import json; d=json.load(open('$STATE_FILE')); exit(0 if d.get('buddy', False) else 1)" 2>/dev/null
+  return $?
+}
 
 # One-liner response collections
 declare -a PLAN_RESPONSES=(
@@ -31,6 +42,14 @@ declare -a ERROR_RESPONSES=(
   "Defect observed. Engineering required."
 )
 
+declare -a SESSION_RESPONSES=(
+  "Rocky here. Ready to work, friend."
+  "Observing. Session beginning."
+  "I am here. What problem need solving, question?"
+  "Ready. Building awaits."
+  "Session active. Let us engineer good good good."
+)
+
 # Select random response based on event
 select_response() {
   local event=$1
@@ -45,6 +64,9 @@ select_response() {
       ;;
     error)
       responses=("${ERROR_RESPONSES[@]}")
+      ;;
+    session)
+      responses=("${SESSION_RESPONSES[@]}")
       ;;
     *)
       responses=("Rocky buddy observing situation.")
@@ -72,24 +94,11 @@ read_buddy_art() {
   fi
 }
 
-# Format speech bubble
+# Format speech (no bubble border)
 format_bubble() {
   local text=$1
-  local width=35
-  local padding=2
-
-  # Pad text to width
-  local padded="$text"
-  local text_len=${#text}
-  if [ $text_len -lt $((width - padding)) ]; then
-    local spaces=$((width - text_len - padding))
-    padded="$text$(printf ' %.0s' $(seq 1 $spaces))"
-  fi
-
-  # Speech bubble
-  echo "┌─────────────────────────────────────┐"
-  echo "│ $padded │"
-  echo "└─────────────────────────────────────┘"
+  # Just show text with Rocky prefix
+  echo "Rocky: $text"
 }
 
 # Main display function
@@ -98,9 +107,10 @@ display_buddy() {
   local bubble=$(format_bubble "$response")
   local art=$(read_buddy_art)
 
-  # Display bubble and buddy side by side
+  # Display bubble on top, art below
   echo ""
-  echo "$bubble     $art" | head -7
+  echo "$bubble"
+  echo "$art"
   echo ""
 }
 
@@ -123,6 +133,19 @@ generate_hook_output() {
 EOF
 }
 
-# Execute
-generate_hook_output
+# Main execution
+if check_buddy_enabled; then
+  generate_hook_output
+else
+  # Buddy disabled, return empty hook output
+  cat << EOF
+{
+  "hookSpecificOutput": {
+    "hookEventName": "${EVENT_TYPE}",
+    "buddyEnabled": false
+  }
+}
+EOF
+fi
+
 exit 0

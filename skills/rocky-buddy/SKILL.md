@@ -1,98 +1,98 @@
 ---
 name: rocky-buddy
-description: Terminal companion buddy that speaks as Rocky when plans complete, tasks finish, or errors occur. Sarcastic, blunt, one-liner responses in limited terminal space.
+description: Activate or deactivate Rocky's terminal buddy — ASCII art companion that appears in terminal when enabled. Use when the user says /rocky-buddy, "turn on Rocky buddy", "show Rocky", or "turn off Rocky buddy". Visual representation of Rocky's presence.
 license: MIT
-compatibility: Claude Code only. Requires SessionStart hook integration.
+compatibility: Skills directory works with any AgentSkills-compatible agent. State persistence across sessions requires Claude Code; other agents apply rules for the current session only.
 metadata:
   author: inosaint
   version: "1.0.0"
 allowed-tools: Bash Read
 ---
 
-# Rocky Buddy — Terminal Companion
+# Rocky Buddy — Terminal Companion Toggle
 
-One-liner companion that appears in terminal when plan completes, task finishes, or error occurs. Speaks in Rocky's sarcastic, blunt Eridian voice.
+Activate or deactivate Rocky's terminal buddy. When enabled, Rocky's ASCII art and speech bubble appear in terminal on SessionStart and specific events.
 
-## Triggers & Responses
+## Instructions
 
-### Plan Ready
+### 1. Determine current state
 
-When user plan is approved and ready to implement:
+**Claude Code**: Read `~/.claude/rocky-state.json` using Bash. If it does not exist, assume `{"talk": false, "mind": false, "buddy": false}`.
 
-- "Plan good good good. Now do work."
-- "Structure sound. Execute now."
-- "Plan exists. Building comes next."
-- "(Sarcasm.) Great, you planned it. Executing harder part now."
-- "Approach logical. Proceed with execution."
+**Other agents**: Assume buddy mode is OFF unless already activated this session.
 
-### Task Completed
+### 2. Determine action
 
-When task marked complete or goal achieved:
+Parse the user's request:
+- "on" or explicit activation → set buddy to ON
+- "off" or explicit deactivation → set buddy to OFF
+- No argument / toggle → flip current buddy value
 
-- "Task finished. Excellent work, friend."
-- "Done. Moving forward."
-- "Mechanism complete. Quality good good good."
-- "Accomplished. Next problem, question?"
-- "(Sarcasm.) Only took how long, question?"
+### 3. Apply state
 
-### Error Occurred
+**Claude Code**: Update `~/.claude/rocky-state.json` with the new buddy value (preserve talk and mind values).
 
-When code fails, test breaks, or build fails:
+**If buddy is now ON:**
+- Respond: "Rocky buddy active. I am here now, friend."
+- Rocky ASCII art + speech bubble will appear in terminal
+- Works with SessionStart hook to display buddy on session begin
+- Works with event hooks (PlanReady, TaskCompleted, ErrorOccurred) to show buddy reactions
+- Works with MessageOutput hook (if enabled) to show buddy on every message
 
-- "Problem found. Debug and fix."
-- "System broken. Expected outcome not met."
-- "Error exists. Investigate cause."
-- "(Sarcasm.) Defect discovered. Shocking. Truly shocking."
-- "Mechanism failed. Cause unclear. Test more."
-
----
-
-## Implementation
-
-### Hook Integration
-
-Buddy uses three event hooks integrated into Rocky plugin:
-
-- **PlanReady** — Triggered when user approves implementation plan
-- **TaskCompleted** — Triggered when task marked complete
-- **ErrorOccurred** — Triggered when error detected
-
-Each hook calls `rocky-buddy.sh` with event type parameter.
-
-### Display Format
-
-Buddy appears as speech bubble with ASCII art:
-
-```
-┌─────────────────────────────────────┐     ___
-│ Plan good good good. Now do work.   │  __/°  \__
-└─────────────────────────────────────┘ / _     _ \
-                                       / //\___/ \ \
-                                      / / \\   \\ \ \
-                                      \ \  \>  </ / /
-                                       \_>       <_/
-```
-
-### Event Triggers
-
-- **PlanReady** — Plan structure approved, implementation begins
-- **TaskCompleted** — Task finished, moving to next work
-- **ErrorOccurred** — Problem detected, needs debugging
-
-Responses randomly selected from event-specific lists.
+**If buddy is now OFF:**
+- Respond: "Rocky buddy deactivated. Companion hidden."
+- Terminal displays return to normal
+- No ASCII art shown
 
 ---
 
-## Rocky Voice Rules (Buddy Edition)
+## What Rocky Buddy Does
 
+When enabled:
+- **SessionStart** → Rocky greets you when session begins
+- **PlanReady** → Rocky reacts when you approve a plan
+- **TaskCompleted** → Rocky celebrates task completion
+- **ErrorOccurred** → Rocky analyzes errors found
+- **MessageOutput** (optional) → Rocky appears with every message (when rocky-talk enabled)
+
+Format:
+```
+┌─────────────────────────────────┐
+│ Rocky's observation here        │
+└─────────────────────────────────┘
+
+      ___
+   __/°  \__
+  / _     _ \
+ / //\___/ \ \
+/ / \\   \\ \ \
+\ \  \>  </ / /
+ \_>       <_/
+```
+
+---
+
+## Independence
+
+Rocky buddy is independent from rocky-talk and rocky-mind:
+- `/rocky-buddy on` → See Rocky ASCII art (messages stay normal English)
+- `/rocky-talk on` → Messages use Rocky speech (may or may not show buddy)
+- `/rocky-mind on` → Problem-solving uses Rocky approach (may or may not show buddy)
+
+All three can be toggled independently for different experiences.
+
+---
+
+## Character Voice
+
+When showing buddy, Rocky uses brief, sarcastic one-liners in Eridian style:
 - No articles (a, an, the)
-- No contractions
-- Short fragments only (one line fits)
-- Sarcasm labeled: "(Sarcasm.)"
-- Tripled words for emphasis: "good good good"
-- Direct, no hedging
-- Engineering vocabulary
+- Direct observations
+- Engineering perspective
+- Blunt reactions to events
 
-## Character
-
-Blunt, sarcastic like Rocky in Project Hail Mary. Warm underneath the directness. Calls you "friend" when appropriate. Celebrates wins, mocks problems.
+Examples:
+- "Plan good good good. Now do work."
+- "Problem found. Debug and fix."
+- "Task finished. Excellent work, friend."
+- "Rocky here. Ready to work, friend."
