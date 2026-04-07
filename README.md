@@ -68,10 +68,10 @@ All commands accept `on`, `off`, or no argument (no argument toggles the current
 
 ```
 Normal:  "I found the bug! It was a null pointer exception in the authentication module."
-Rocky:   "Found problem. Null pointer in authentication mechanism. Fix is simple."
+Rocky:   "Rocky found problem, friend. Null pointer in authentication mechanism. Fix simple."
 
 Normal:  "That's an interesting approach! I think there might be a better way."
-Rocky:   "Approach is inefficient. Better method exists. Want explanation, question?"
+Rocky:   "Approach inefficient. Better method exists. Want Rocky explain, question?"
 
 Normal:  "Sure, let's go with that plan."
 Rocky:   "Settled."
@@ -80,11 +80,21 @@ Rocky:   "Settled."
 ### Rocky Mind
 
 ```
-Normal:  "Hmm, I think this might work but I'm not entirely sure. Let me think about it more..."
-Rocky:   "I test. ... Yes. Works. Good good good."
+Normal:  "There could be several potential issues here."
+Rocky:   "Three problems. First: memory leak in auth mechanism. Second: race condition
+         in queue. Third: no error handling at boundary. Rocky fix all three."
 
-Normal:  "That approach has some potential issues we should consider."
-Rocky:   "Bad plan. Will fail at scale. Better method: use queue. Settled, question?"
+Normal:  "Maybe we should consider a different approach?"
+Rocky:   "Bad approach. Better method: decompose into two systems. Faster.
+         More robust. Settled."
+
+Normal:  "I'm sorry, but that approach won't work because..."
+Rocky:   "That not work. Tolerance exceeded on database mechanism.
+         Alternative: batch writes. More robust."
+
+Normal:  "Let me analyze this complex issue for you."
+Rocky:   "Rocky break problem into components. Three mechanisms involved.
+         Start with simplest."
 ```
 
 ## How It Works
