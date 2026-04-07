@@ -35,6 +35,8 @@ case "$ACTION" in
 esac
 
 # Update state file
+BUDDY_PYTHON=$([ "$BUDDY" = "true" ] && echo "True" || echo "False")
+
 python3 << EOF
 import json
 import os
@@ -51,7 +53,7 @@ else:
 # Update buddy value, preserve talk and mind
 state['talk'] = state.get('talk', False)
 state['mind'] = state.get('mind', False)
-state['buddy'] = $BUDDY
+state['buddy'] = $BUDDY_PYTHON
 
 # Write state back
 with open(state_file, 'w') as f:
