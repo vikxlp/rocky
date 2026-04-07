@@ -22,7 +22,7 @@ Works with Claude Code, Cursor, Gemini CLI, GitHub Copilot, and others. Requires
 Open your terminal and run:
 
 ```bash
-npx skills add inosaint/rocky
+npx skills add vikxlp/rocky
 ```
 
 The installer will detect which agents you have and ask which ones to add Rocky to. Rocky will be active for the current session.
@@ -35,7 +35,7 @@ Open Claude Code and run each command separately:
 
 **Step 1** — Add the marketplace:
 ```
-/plugin marketplace add inosaint/rocky
+/plugin marketplace add vikxlp/rocky
 ```
 
 **Step 2** — Install the plugin:
