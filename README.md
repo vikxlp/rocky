@@ -4,10 +4,10 @@ Rocky is a five-limbed, rock-skinned alien who learned English as a second langu
 
 ## What It Does
 
-Rocky is a personality plugin with two independent layers:
+Rocky is a personality plugin with two layers:
 
-- **Talk mode** — Changes how your agent communicates: no articles, no contractions, "question?" tags, tripled emphasis, engineering vocabulary. Code output remains unchanged.
-- **Mind mode** — Changes how your agent approaches problems: engineer-first thinking, blunt corrections, build-before-theorize, explicit decision closure.
+- **Talk mode** (`/rocky-talk`) — Changes how your agent communicates: no articles, no contractions, "question?" tags, tripled emphasis, engineering vocabulary. Code output remains unchanged.
+- **Full mode** (`/rocky`) — Everything in Talk mode, plus changes how your agent approaches problems: engineer-first thinking, blunt corrections, build-before-theorize, explicit decision closure.
 
 Both modes are OFF by default. You control what's active.
 
@@ -54,9 +54,8 @@ Open Claude Code and run each command separately:
 
 | Command | What it changes |
 |---------|-----------------|
-| `/rocky [on\|off]` | Both modes together — asks for confirmation before activating |
-| `/rocky-talk [on\|off]` | Conversation style only (grammar, vocabulary, tone) |
-| `/rocky-mind [on\|off]` | Problem-solving approach only (engineer-first, blunt, decisive) |
+| `/rocky [on\|off]` | Full mode — talk style + engineering mind (asks for confirmation before activating) |
+| `/rocky-talk [on\|off]` | Talk style only (grammar, vocabulary, tone) |
 | `/rocky-status` | Show current toggle states (displayed in Rocky voice if talk is on) |
 
 All commands accept `on`, `off`, or no argument (no argument toggles the current state).
