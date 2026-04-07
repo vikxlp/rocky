@@ -109,9 +109,10 @@ display_buddy() {
   local bubble=$(format_bubble "$response")
   local art=$(read_buddy_art)
 
-  # Display bubble and buddy side by side
+  # Display bubble on top, art below
   echo ""
-  echo "$bubble     $art" | head -7
+  echo "$bubble"
+  echo "$art"
   echo ""
 }
 
