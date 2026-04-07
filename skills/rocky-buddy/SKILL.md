@@ -57,10 +57,7 @@ When enabled:
 
 Format:
 ```
-┌─────────────────────────────────┐
-│ Rocky's observation here        │
-└─────────────────────────────────┘
-
+Rocky: Rocky's observation here
       ___
    __/°  \__
   / _     _ \
@@ -96,3 +93,49 @@ Examples:
 - "Problem found. Debug and fix."
 - "Task finished. Excellent work, friend."
 - "Rocky here. Ready to work, friend."
+
+---
+
+## Display Format Rules — CRITICAL
+
+**All Rocky buddy displays MUST follow this exact format. No exceptions. No variations.**
+
+```
+Rocky: [one-liner message]
+      ___
+   __/°  \__
+  / _     _ \
+ / //\___/ \ \
+/ / \\   \\ \ \
+\ \  \>  </ / /
+ \_>       <_/
+```
+
+### Rules
+
+✓ **ALWAYS:**
+- Start with "Rocky: " (colon + space)
+- Message on first line only
+- ASCII art on following 7 lines
+- Consistent across all events
+- Consistent across all displays
+
+✗ **NEVER:**
+- Use speech bubble borders (┌─┐│└─┘)
+- Wrap message inside ASCII art
+- Place message and art side-by-side
+- Use alternative ASCII variants
+- Deviate from this exact format
+- Add decorations or modifications
+
+### Consistency
+
+Same format for:
+- SessionStart events
+- PlanReady events
+- TaskCompleted events
+- ErrorOccurred events
+- MessageOutput events
+- All other displays
+
+No exceptions. Ever. Settled.
