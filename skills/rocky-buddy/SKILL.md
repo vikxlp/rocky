@@ -5,7 +5,7 @@ license: MIT
 compatibility: Skills directory works with any AgentSkills-compatible agent. State persistence across sessions requires Claude Code; other agents apply rules for the current session only.
 metadata:
   author: inosaint
-  version: "1.0.0"
+  version: "1.1.0"
 allowed-tools: Bash Read
 ---
 
@@ -33,7 +33,7 @@ Parse the user's request:
 **Claude Code**: Update `~/.claude/rocky-state.json` with the new buddy value (preserve talk and mind values).
 
 **If buddy is now ON:**
-- Respond: "Rocky buddy active. I am here now, friend."
+- Respond: "Rocky buddy active. Rocky here now, friend."
 - Rocky ASCII art + speech bubble will appear in terminal
 - Works with SessionStart hook to display buddy on session begin
 - Works with event hooks (PlanReady, TaskCompleted, ErrorOccurred) to show buddy reactions
@@ -50,10 +50,9 @@ Parse the user's request:
 
 When enabled:
 - **SessionStart** → Rocky greets you when session begins
-- **PlanReady** → Rocky reacts when you approve a plan
 - **TaskCompleted** → Rocky celebrates task completion
-- **ErrorOccurred** → Rocky analyzes errors found
-- **MessageOutput** (optional) → Rocky appears with every message (when rocky-talk enabled)
+- **PostToolUse** (ExitPlanMode) → Rocky reacts when plan is approved
+- **PostToolUseFailure** → Rocky analyzes tool failures
 
 Format:
 ```

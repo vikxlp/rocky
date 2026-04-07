@@ -7,15 +7,27 @@ EVENT_TYPE="${1:-unknown}"
 BUDDY_ART_FILE="${CLAUDE_PLUGIN_ROOT}/skills/rocky-buddy/companion.txt"
 STATE_FILE="$HOME/.claude/rocky-state.json"
 
-# Check if buddy is enabled
-check_buddy_enabled() {
-  if [ ! -f "$STATE_FILE" ]; then
-    return 1
-  fi
+# Map short event arg to proper Claude Code hook event name
+case "$EVENT_TYPE" in
+  session) HOOK_EVENT_NAME="SessionStart" ;;
+  task)    HOOK_EVENT_NAME="TaskCompleted" ;;
+  plan)    HOOK_EVENT_NAME="PostToolUse" ;;
+  error)   HOOK_EVENT_NAME="PostToolUseFailure" ;;
+  *)       HOOK_EVENT_NAME="$EVENT_TYPE" ;;
+esac
 
-  python3 -c "import json; d=json.load(open('$STATE_FILE')); exit(0 if d.get('buddy', False) else 1)" 2>/dev/null
-  return $?
+# Check if buddy is enabled — exit early before building response arrays
+if [ ! -f "$STATE_FILE" ] || ! python3 -c "import json; d=json.load(open('$STATE_FILE')); exit(0 if d.get('buddy', False) else 1)" 2>/dev/null; then
+  cat << EOF
+{
+  "hookSpecificOutput": {
+    "hookEventName": "${HOOK_EVENT_NAME}",
+    "additionalContext": ""
+  }
 }
+EOF
+  exit 0
+fi
 
 # One-liner response collections
 declare -a PLAN_RESPONSES=(
@@ -45,7 +57,7 @@ declare -a ERROR_RESPONSES=(
 declare -a SESSION_RESPONSES=(
   "Rocky here. Ready to work, friend."
   "Observing. Session beginning."
-  "I am here. What problem need solving, question?"
+  "Rocky here. What problem need solving, question?"
   "Ready. Building awaits."
   "Session active. Let us engineer good good good."
 )
@@ -124,26 +136,14 @@ generate_hook_output() {
   cat << EOF
 {
   "hookSpecificOutput": {
-    "hookEventName": "${EVENT_TYPE}",
+    "hookEventName": "${HOOK_EVENT_NAME}",
     "additionalContext": "${escaped_display}"
   }
 }
 EOF
 }
 
-# Main execution
-if check_buddy_enabled; then
-  generate_hook_output
-else
-  # Buddy disabled, return empty hook output
-  cat << EOF
-{
-  "hookSpecificOutput": {
-    "hookEventName": "${EVENT_TYPE}",
-    "additionalContext": ""
-  }
-}
-EOF
-fi
+# Main execution (buddy enabled — early exit for disabled case is above)
+generate_hook_output
 
 exit 0

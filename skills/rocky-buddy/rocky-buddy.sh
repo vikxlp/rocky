@@ -64,7 +64,7 @@ EOF
 # Generate response
 if [ "$BUDDY" = "true" ]; then
   cat << 'EOF'
-Rocky buddy active. I am here now, friend.
+Rocky buddy active. Rocky here now, friend.
 EOF
 else
   cat << 'EOF'
