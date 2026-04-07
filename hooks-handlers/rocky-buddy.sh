@@ -7,6 +7,15 @@ EVENT_TYPE="${1:-unknown}"
 BUDDY_ART_FILE="${CLAUDE_PLUGIN_ROOT}/skills/rocky-buddy/companion.txt"
 STATE_FILE="$HOME/.claude/rocky-state.json"
 
+# Map short event names to valid Claude Code hook event names
+case "$EVENT_TYPE" in
+  session) HOOK_EVENT_NAME="SessionStart" ;;
+  task)    HOOK_EVENT_NAME="TaskCompleted" ;;
+  plan)    HOOK_EVENT_NAME="PostToolUse" ;;
+  error)   HOOK_EVENT_NAME="PostToolUseFailure" ;;
+  *)       HOOK_EVENT_NAME="$EVENT_TYPE" ;;
+esac
+
 # Check if buddy is enabled
 check_buddy_enabled() {
   if [ ! -f "$STATE_FILE" ]; then
@@ -45,18 +54,11 @@ declare -a ERROR_RESPONSES=(
 declare -a SESSION_RESPONSES=(
   "Rocky here. Ready to work, friend."
   "Observing. Session beginning."
-  "I am here. What problem need solving, question?"
+  "Rocky here. What problem need solving, question?"
   "Ready. Building awaits."
   "Session active. Let us engineer good good good."
 )
 
-declare -a MESSAGE_RESPONSES=(
-  "Rocky observing."
-  "Engineering perspective applied."
-  "Analysis complete."
-  "Work continues good good good."
-  "Rocky present. Monitoring progress."
-)
 
 # Select random response based on event
 select_response() {
@@ -75,9 +77,6 @@ select_response() {
       ;;
     session)
       responses=("${SESSION_RESPONSES[@]}")
-      ;;
-    message)
-      responses=("${MESSAGE_RESPONSES[@]}")
       ;;
     *)
       responses=("Rocky buddy observing situation.")
@@ -107,15 +106,6 @@ select_variant() {
       ;;
     plan)
       variant_file="$variants_dir/variant-calm.txt"
-      ;;
-    message)
-      # Rotate variants for message events
-      local rand=$((RANDOM % 3))
-      case $rand in
-        0) variant_file="$variants_dir/variant-ready.txt" ;;
-        1) variant_file="$variants_dir/variant-calm.txt" ;;
-        2) variant_file="$variants_dir/variant-concerned.txt" ;;
-      esac
       ;;
     *)
       variant_file="$variants_dir/companion.txt"
@@ -167,7 +157,6 @@ display_buddy() {
 
 # Generate hook output JSON
 generate_hook_output() {
-  local response=$(select_response "$EVENT_TYPE")
   local display=$(display_buddy)
 
   # Escape for JSON
@@ -176,9 +165,8 @@ generate_hook_output() {
   cat << EOF
 {
   "hookSpecificOutput": {
-    "hookEventName": "${EVENT_TYPE}",
-    "buddyResponse": "${response}",
-    "displayOutput": "${escaped_display}"
+    "hookEventName": "${HOOK_EVENT_NAME}",
+    "additionalContext": "${escaped_display}"
   }
 }
 EOF
@@ -188,29 +176,14 @@ EOF
 if check_buddy_enabled; then
   generate_hook_output
 else
-  # Buddy disabled, return empty hook output
-  # For message events, silent when disabled
-  # For other events, still return structured response
-  if [ "$EVENT_TYPE" = "message" ]; then
-    # Silent - no output
-    cat << EOF
+  cat << EOF
 {
   "hookSpecificOutput": {
-    "hookEventName": "${EVENT_TYPE}",
+    "hookEventName": "${HOOK_EVENT_NAME}",
     "buddyEnabled": false
   }
 }
 EOF
-  else
-    cat << EOF
-{
-  "hookSpecificOutput": {
-    "hookEventName": "${EVENT_TYPE}",
-    "buddyEnabled": false
-  }
-}
-EOF
-  fi
 fi
 
 exit 0

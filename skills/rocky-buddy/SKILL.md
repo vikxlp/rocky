@@ -5,7 +5,7 @@ license: MIT
 compatibility: Skills directory works with any AgentSkills-compatible agent. State persistence across sessions requires Claude Code; other agents apply rules for the current session only.
 metadata:
   author: inosaint
-  version: "1.0.0"
+  version: "1.1.0"
 allowed-tools: Bash Read
 ---
 
@@ -33,11 +33,12 @@ Parse the user's request:
 **Claude Code**: Update `~/.claude/rocky-state.json` with the new buddy value (preserve talk and mind values).
 
 **If buddy is now ON:**
-- Respond: "Rocky buddy active. I am here now, friend."
+- Respond: "Rocky buddy active. Rocky here now, friend."
 - Rocky ASCII art + speech bubble will appear in terminal
 - Works with SessionStart hook to display buddy on session begin
-- Works with event hooks (PlanReady, TaskCompleted, ErrorOccurred) to show buddy reactions
-- Works with MessageOutput hook (if enabled) to show buddy on every message
+- Works with PostToolUse (ExitPlanMode matcher) to show buddy on plan approval
+- Works with TaskCompleted hook to show buddy on task completion
+- Works with PostToolUseFailure hook to show buddy on errors
 
 **If buddy is now OFF:**
 - Respond: "Rocky buddy deactivated. Companion hidden."
@@ -49,11 +50,10 @@ Parse the user's request:
 ## What Rocky Buddy Does
 
 When enabled:
-- **SessionStart** → Rocky greets you when session begins
-- **PlanReady** → Rocky reacts when you approve a plan
-- **TaskCompleted** → Rocky celebrates task completion
-- **ErrorOccurred** → Rocky analyzes errors found
-- **MessageOutput** (optional) → Rocky appears with every message (when rocky-talk enabled)
+- **SessionStart** → Rocky greets you when session begins (`variant-ready.txt`)
+- **PostToolUse** (ExitPlanMode) → Rocky reacts when you approve a plan (`variant-calm.txt`)
+- **TaskCompleted** → Rocky celebrates task completion (`variant-calm.txt`)
+- **PostToolUseFailure** → Rocky analyzes errors found (`variant-concerned.txt`)
 
 Format:
 ```
@@ -98,44 +98,44 @@ Examples:
 
 ## Display Format Rules — CRITICAL
 
-**All Rocky buddy displays MUST follow this exact format. No exceptions. No variations.**
+**All Rocky buddy displays MUST follow this exact format.**
 
 ```
 Rocky: [one-liner message]
-      ___
-   __/°  \__
-  / _     _ \
- / //\___/ \ \
-/ / \\   \\ \ \
-\ \  \>  </ / /
- \_>       <_/
+[ASCII variant art]
 ```
+
+### Variant Mapping
+
+Each hook event uses a specific ASCII variant from `skills/rocky-buddy/`:
+
+| Event | Variant file | Lines |
+|-------|-------------|-------|
+| SessionStart | `variant-ready.txt` | 5 |
+| TaskCompleted | `variant-calm.txt` | 5 |
+| PostToolUse (plan approval) | `variant-calm.txt` | 5 |
+| PostToolUseFailure | `variant-concerned.txt` | 5 |
+| fallback / unknown | `companion.txt` | 7 |
 
 ### Rules
 
 ✓ **ALWAYS:**
 - Start with "Rocky: " (colon + space)
 - Message on first line only
-- ASCII art on following 7 lines
-- Consistent across all events
-- Consistent across all displays
+- ASCII art on following lines (5 for variants, 7 for companion.txt)
+- Use the correct variant for the event type
 
 ✗ **NEVER:**
 - Use speech bubble borders (┌─┐│└─┘)
 - Wrap message inside ASCII art
 - Place message and art side-by-side
-- Use alternative ASCII variants
-- Deviate from this exact format
 - Add decorations or modifications
 
 ### Consistency
 
-Same format for:
-- SessionStart events
-- PlanReady events
-- TaskCompleted events
-- ErrorOccurred events
-- MessageOutput events
-- All other displays
-
-No exceptions. Ever. Settled.
+Same format for all events — only the variant art differs:
+- SessionStart → ready
+- PostToolUse (plan) → calm
+- TaskCompleted → calm
+- PostToolUseFailure → concerned
+- Unknown → companion.txt fallback
