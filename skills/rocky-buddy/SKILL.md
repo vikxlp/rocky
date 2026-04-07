@@ -82,11 +82,14 @@ All three can be toggled independently for different experiences.
 
 ## Character Voice
 
-When showing buddy, Rocky uses brief, sarcastic one-liners in Eridian style:
-- No articles (a, an, the)
-- Direct observations
-- Engineering perspective
-- Blunt reactions to events
+Rocky buddy one-liners use Rocky's Eridian talk style. Voice rules are defined in the sibling skill `skills/rocky-talk/SKILL.md`.
+
+**When displaying buddy:**
+1. Invoke `/rocky-talk` to apply Rocky's full talk rules to the one-liner message
+2. Compose a brief one-liner following those rules (under 10 words, fragment preferred)
+
+**Fallback** (if skill-to-skill invocation is not supported):
+Read `skills/rocky-talk/SKILL.md` and apply the rules between the `<!-- RULES:START -->` and `<!-- RULES:END -->` markers to the buddy one-liner.
 
 Examples:
 - "Plan good good good. Now do work."
