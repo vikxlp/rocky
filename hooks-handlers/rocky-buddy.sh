@@ -7,7 +7,7 @@ EVENT_TYPE="${1:-unknown}"
 BUDDY_ART_FILE="${CLAUDE_PLUGIN_ROOT}/skills/rocky-buddy/companion.txt"
 STATE_FILE="$HOME/.claude/rocky-state.json"
 
-# Map short event arg to proper Claude Code hook event name
+# Map short event names to valid Claude Code hook event names
 case "$EVENT_TYPE" in
   session) HOOK_EVENT_NAME="SessionStart" ;;
   task)    HOOK_EVENT_NAME="TaskCompleted" ;;
@@ -16,14 +16,14 @@ case "$EVENT_TYPE" in
   *)       HOOK_EVENT_NAME="$EVENT_TYPE" ;;
 esac
 
-# Check if buddy is enabled — exit early before building response arrays
-if [ ! -f "$STATE_FILE" ] || ! python3 -c "import json; d=json.load(open('$STATE_FILE')); exit(0 if d.get('buddy', False) else 1)" 2>/dev/null; then
-  cat << EOF
-{
-  "hookSpecificOutput": {
-    "hookEventName": "${HOOK_EVENT_NAME}",
-    "additionalContext": ""
-  }
+# Check if buddy is enabled
+check_buddy_enabled() {
+  if [ ! -f "$STATE_FILE" ]; then
+    return 1
+  fi
+
+  python3 -c "import json; d=json.load(open('$STATE_FILE')); exit(0 if d.get('buddy', False) else 1)" 2>/dev/null
+  return $?
 }
 EOF
   exit 0
@@ -62,6 +62,7 @@ declare -a SESSION_RESPONSES=(
   "Session active. Let us engineer good good good."
 )
 
+
 # Select random response based on event
 select_response() {
   local event=$1
@@ -90,20 +91,51 @@ select_response() {
   echo "${responses[$index]}"
 }
 
-# Read buddy ASCII art
-read_buddy_art() {
-  if [ -f "$BUDDY_ART_FILE" ]; then
-    cat "$BUDDY_ART_FILE"
+# Select ASCII variant based on event type
+select_variant() {
+  local event=$1
+  local variants_dir="${CLAUDE_PLUGIN_ROOT}/skills/rocky-buddy"
+  local variant_file=""
+
+  case "$event" in
+    session)
+      variant_file="$variants_dir/variant-ready.txt"
+      ;;
+    task)
+      variant_file="$variants_dir/variant-calm.txt"
+      ;;
+    error)
+      variant_file="$variants_dir/variant-concerned.txt"
+      ;;
+    plan)
+      variant_file="$variants_dir/variant-calm.txt"
+      ;;
+    *)
+      variant_file="$variants_dir/companion.txt"
+      ;;
+  esac
+
+  if [ -f "$variant_file" ]; then
+    cat "$variant_file"
   else
-    # Fallback
-    echo "      ___"
-    echo "   __/°  \__"
-    echo "  / _     _ \\"
-    echo " / //\\\___/ \\ \\"
-    echo "/ / \\\\   \\\\ \\ \\"
-    echo "\\ \\  \\>  </ / /"
-    echo " \\_>       <_/"
+    # Fallback to original
+    if [ -f "$BUDDY_ART_FILE" ]; then
+      cat "$BUDDY_ART_FILE"
+    else
+      echo "      ___"
+      echo "   __/°  \__"
+      echo "  / _     _ \\"
+      echo " / //\\\___/ \\ \\"
+      echo "/ / \\\\   \\\\ \\ \\"
+      echo "\\ \\  \>  </ / /"
+      echo " \\_>       <_/"
+    fi
   fi
+}
+
+# Read buddy ASCII art (uses variant selection)
+read_buddy_art() {
+  select_variant "$EVENT_TYPE"
 }
 
 # Format speech (no bubble border)
@@ -130,8 +162,8 @@ display_buddy() {
 generate_hook_output() {
   local display=$(display_buddy)
 
-  # Escape for JSON (same pattern as session-start.sh)
-  local escaped_display=$(printf '%s' "$display" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read())[1:-1])" 2>/dev/null || echo "")
+  # Escape for JSON
+  local escaped_display=$(printf '%s' "$display" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read())[1:-1])" 2>/dev/null || echo "$display")
 
   cat << EOF
 {
@@ -143,7 +175,18 @@ generate_hook_output() {
 EOF
 }
 
-# Main execution (buddy enabled — early exit for disabled case is above)
-generate_hook_output
+# Main execution
+if check_buddy_enabled; then
+  generate_hook_output
+else
+  cat << EOF
+{
+  "hookSpecificOutput": {
+    "hookEventName": "${HOOK_EVENT_NAME}",
+    "buddyEnabled": false
+  }
+}
+EOF
+fi
 
 exit 0
