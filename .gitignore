@@ -1,5 +1,5 @@
 # Local Claude Code settings (personal permissions, not for sharing)
 .claude/settings.local.json
 
-# CLAUDE.md
-CLAUDE.md
+# macos
+.DS_Store

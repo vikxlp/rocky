@@ -27,10 +27,21 @@
     ],
     "PostToolUse": [
       {
+        "matcher": "ExitPlanMode",
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/rocky-buddy.sh message"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/rocky-buddy.sh plan"
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/rocky-buddy.sh error"
           }
         ]
       }
