@@ -1,11 +1,11 @@
 ---
 name: rocky-status
-description: Show current Rocky mode states — which of talk style and engineering mind are active. Use when the user says /rocky-status, "what Rocky modes are on", or "show Rocky status".
+description: Show current Rocky mode states — which of talk style, engineering mind, and buddy are active. Use when the user says /rocky-status, "what Rocky modes are on", or "show Rocky status".
 license: MIT
 compatibility: Skills directory works with any AgentSkills-compatible agent. State persistence across sessions requires Claude Code; other agents report session-only state.
 metadata:
   author: vikxlp
-  version: "1.1.0"
+  version: "1.2.0"
 allowed-tools: Bash
 ---
 
@@ -17,9 +17,9 @@ Show which Rocky modes are currently active.
 
 ### 1. Read state
 
-**Claude Code**: Read `~/.claude/rocky-state.json` using Bash. If the file does not exist, report both modes as OFF.
+**Claude Code**: Read `~/.claude/rocky-state.json` using Bash. If the file does not exist, report all modes as OFF.
 
-**Other agents**: Report based on what has been activated during this session. If no activation has occurred, both are OFF.
+**Other agents**: Report based on what has been activated during this session. If no activation has occurred, all are OFF.
 
 ### 2. Display status
 
@@ -28,6 +28,7 @@ Rocky Status
 ─────────────────────────
 Talk (chat style):     ON / OFF
 Mind (engineering):    ON / OFF
+Buddy (terminal art):  ON / OFF
 ─────────────────────────
 ```
 
@@ -38,6 +39,7 @@ Use ON or OFF based on actual state.
 Below the status table:
 - `/rocky [on|off]` — Toggle full mode (talk + mind)
 - `/rocky-talk [on|off]` — Toggle chat style only
+- `/rocky-buddy [on|off]` — Toggle terminal buddy
 
 ### 4. Voice rule
 
