@@ -33,15 +33,10 @@ Parse the user's request:
 **Claude Code**: Update `~/.claude/rocky-state.json` with the new buddy value (preserve talk and mind values).
 
 **If buddy is now ON:**
-- Respond: "Rocky buddy active. Rocky here now, friend."
-- Rocky ASCII art + speech bubble will appear in terminal
-- Works with SessionStart hook to display buddy on session begin
-- Works with PostToolUse (ExitPlanMode matcher) to show buddy on plan approval
-- Works with TaskCompleted hook to show buddy on task completion
-- Works with PostToolUseFailure hook to show buddy on errors
+- Respond using the Rocky buddy display format (one-liner + ASCII art). Use `variant-ready.txt`. No separate confirmation text. One-liner - "Rocky here. Ready to work, friend."
 
 **If buddy is now OFF:**
-- Respond: "Rocky buddy deactivated. Companion hidden."
+- Respond with plain text only (no Rocky style, no art): "Rocky buddy deactivated."
 - Terminal displays return to normal
 - No ASCII art shown
 
@@ -57,7 +52,7 @@ When enabled:
 
 Format:
 ```
-Rocky: Rocky's observation here
+Rocky's observation here
       ___
    __/°  \__
   / _     _ \
