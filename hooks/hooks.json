@@ -1,5 +1,5 @@
 {
-  "description": "Rocky buddy companion hooks with variants",
+  "description": "Rocky personality injection, buddy companion, and mood tracking hooks",
   "hooks": {
     "SessionStart": [
       {
@@ -15,43 +15,22 @@
         ]
       }
     ],
-    "TaskCompleted": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/rocky-buddy.sh task"
-          }
-        ]
-      }
-    ],
     "PostToolUse": [
       {
-        "matcher": "ExitPlanMode",
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/rocky-buddy.sh plan"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/rocky-mood.sh tool"
           }
         ]
       }
     ],
-    "PostToolUseFailure": [
+    "Stop": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/rocky-buddy.sh error"
-          }
-        ]
-      }
-    ],
-    "MessageOutput": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/rocky-buddy.sh message"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/rocky-mood.sh stop"
           }
         ]
       }

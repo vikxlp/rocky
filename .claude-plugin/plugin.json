@@ -9,5 +9,10 @@
   "homepage": "https://github.com/vikxlp/rocky",
   "repository": "https://github.com/vikxlp/rocky",
   "license": "MIT",
-  "keywords": ["personality", "rocky", "project-hail-mary", "eridian"]
+  "keywords": ["personality", "rocky", "project-hail-mary", "eridian"],
+  "skills": "skills",
+  "hooks": "hooks/hooks.json",
+  "settings": {
+    "statusLine": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/rocky-status-line.sh"
+  }
 }
