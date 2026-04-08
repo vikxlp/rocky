@@ -29,7 +29,7 @@ The hook handles persistence across sessions; the skills handle in-session toggl
 | `assets/variant-ready.txt` | Rocky ASCII art — session start / mode enable |
 | `assets/variant-calm.txt` | Rocky ASCII art — task complete / plan approved / mode disable |
 | `assets/variant-concerned.txt` | Rocky ASCII art — tool failure / error |
-| `assets/companion.txt` | Rocky ASCII art — fallback |
+| `assets/variant-default.txt` | Rocky ASCII art — fallback |
 | `hooks-handlers/session-start.sh` | Engine — reads state, extracts rules from SKILL.md files, injects context + art |
 | `hooks-handlers/rocky-buddy.sh` | Art display handler — fires on task/plan/error events when rocky is active |
 | `hooks/hooks.json` | Registers all hooks (SessionStart, TaskCompleted, PostToolUse, PostToolUseFailure) |

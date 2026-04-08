@@ -82,14 +82,14 @@ select_variant() {
       variant_file="$VARIANTS_DIR/variant-concerned.txt"
       ;;
     *)
-      variant_file="$VARIANTS_DIR/companion.txt"
+      variant_file="$VARIANTS_DIR/variant-default.txt"
       ;;
   esac
 
   if [ -f "$variant_file" ]; then
     cat "$variant_file"
   else
-    cat "$VARIANTS_DIR/companion.txt" 2>/dev/null || echo "      ___
+    cat "$VARIANTS_DIR/variant-default.txt" 2>/dev/null || echo "      ___
    __/o  \__
   / _  oo _ /
  /_/ \.__/
