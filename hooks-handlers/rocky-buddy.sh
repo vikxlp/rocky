@@ -4,10 +4,11 @@
 # Displays when talk or mind mode is active on plan ready, task complete, or error
 
 EVENT_TYPE="${1:-unknown}"
-VARIANTS_DIR="${CLAUDE_PLUGIN_ROOT}/assets"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+VARIANTS_DIR="$SCRIPT_DIR/../assets"
 
 # shellcheck source=_lib.sh
-source "$(cd "$(dirname "$0")" && pwd)/_lib.sh"
+source "$SCRIPT_DIR/_lib.sh"
 
 # Map short event names to valid Claude Code hook event names
 case "$EVENT_TYPE" in
@@ -89,11 +90,7 @@ select_variant() {
   if [ -f "$variant_file" ]; then
     cat "$variant_file"
   else
-    cat "$VARIANTS_DIR/variant-default.txt" 2>/dev/null || echo "      ___
-   __/o  \__
-  / _  oo _ /
- /_/ \.__/
- \>   ' '"
+    cat "$VARIANTS_DIR/variant-default.txt" 2>/dev/null || printf '      ___\n   __/\260  \\__\n  / _     _ \\\n / //\\___/ \\ \\\n/ / \\\\   \\\\ \\ \\\n\\ \\  \\>  </ / /\n \\_>       <_/\n'
   fi
 }
 

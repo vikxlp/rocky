@@ -45,3 +45,28 @@ output_hook_json() {
 }
 EOF
 }
+
+# Build the session greeting block: random greeting line + variant-ready art.
+# Usage: get_session_greeting "$ASSETS_DIR"
+get_session_greeting() {
+  local assets_dir="${1:-$SCRIPT_DIR/../assets}"
+
+  local -a SESSION_RESPONSES=(
+    "Rocky here. Ready to work, friend."
+    "Observing. Session beginning."
+    "Rocky here. What problem need solving, question?"
+    "Ready. Building awaits."
+    "Session active. Let us engineer good good good."
+  )
+  local response="${SESSION_RESPONSES[$((RANDOM % ${#SESSION_RESPONSES[@]}))]}"
+
+  local buddy_file="$assets_dir/variant-ready.txt"
+  local buddy_art=""
+  if [ -f "$buddy_file" ]; then
+    buddy_art=$(cat "$buddy_file")
+  else
+    buddy_art=$(cat "$assets_dir/variant-default.txt" 2>/dev/null || printf '      ___\n   __/\260  \\__\n  / _     _ \\\n / //\\___/ \\ \\\n/ / \\\\   \\\\ \\ \\\n\\ \\  \\>  </ / /\n \\_>       <_/')
+  fi
+
+  printf '\nRocky: %s\n%s\n' "$response" "$buddy_art"
+}
