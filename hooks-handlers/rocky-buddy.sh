@@ -34,12 +34,12 @@ declare -a PLAN_RESPONSES=(
   "Strategy acceptable. Implementation begins."
 )
 
-declare -a TASK_RESPONSES=(
+declare -a HAPPY_RESPONSES=(
   "Task finished. Excellent work, friend."
-  "Done. Moving forward."
+  "Success success success. Progress excellent."
   "Mechanism complete. Quality good good good."
-  "Accomplished. Next problem, question?"
-  "Work finished. Progress observed."
+  "Accomplished. Moving forward strong."
+  "Work finished. Victory observed."
 )
 
 declare -a ERROR_RESPONSES=(
@@ -58,6 +58,22 @@ declare -a SESSION_RESPONSES=(
   "Session active. Let us engineer good good good."
 )
 
+declare -a CALM_RESPONSES=(
+  "Friend, Rocky observe progress."
+  "Working as planned, friend."
+  "Mechanism sound. Proceeding."
+  "All well. Continuing forward."
+  "Steady progress, friend."
+)
+
+declare -a SORRY_RESPONSES=(
+  "Problem found. Rocky apologize, friend."
+  "Error detected. Rocky regret situation."
+  "Mechanism failed. Rocky work fix, friend."
+  "Mistake observed. Rocky make right."
+  "Problem bad. Rocky sorry, friend."
+)
+
 
 # Select random response based on event
 select_response() {
@@ -69,10 +85,19 @@ select_response() {
       responses=("${PLAN_RESPONSES[@]}")
       ;;
     task)
-      responses=("${TASK_RESPONSES[@]}")
+      responses=("${HAPPY_RESPONSES[@]}")
+      ;;
+    message)
+      responses=("${CALM_RESPONSES[@]}")
       ;;
     error)
-      responses=("${ERROR_RESPONSES[@]}")
+      # Randomize between concerned and sorry responses
+      local error_choice=$((RANDOM % 2))
+      if [ $error_choice -eq 0 ]; then
+        responses=("${ERROR_RESPONSES[@]}")
+      else
+        responses=("${SORRY_RESPONSES[@]}")
+      fi
       ;;
     session)
       responses=("${SESSION_RESPONSES[@]}")
@@ -98,16 +123,22 @@ select_variant() {
       variant_file="$variants_dir/variant-ready.txt"
       ;;
     task)
+      variant_file="$variants_dir/variant-happy.txt"
+      ;;
+    message)
       variant_file="$variants_dir/variant-calm.txt"
       ;;
     error)
-      variant_file="$variants_dir/variant-concerned.txt"
+      # Randomize between concerned and sorry
+      local error_variants=("concerned" "sorry")
+      local error_choice=${error_variants[$((RANDOM % 2))]}
+      variant_file="$variants_dir/variant-${error_choice}.txt"
       ;;
     plan)
-      variant_file="$variants_dir/variant-calm.txt"
+      variant_file="$variants_dir/variant-ready.txt"
       ;;
     *)
-      variant_file="$variants_dir/companion.txt"
+      variant_file="$variants_dir/variant-ready.txt"
       ;;
   esac
 

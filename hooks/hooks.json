@@ -1,5 +1,5 @@
 {
-  "description": "Rocky personality injection and buddy companion hooks",
+  "description": "Rocky buddy companion hooks with variants",
   "hooks": {
     "SessionStart": [
       {
