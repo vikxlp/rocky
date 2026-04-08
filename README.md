@@ -8,7 +8,7 @@ Rocky is a personality plugin with three independent layers:
 
 - **Talk mode** (`/rocky-talk`) — Changes how your agent communicates: no articles, no contractions, "question?" tags, tripled emphasis, engineering vocabulary. Code output remains unchanged.
 - **Full mode** (`/rocky`) — Everything in Talk mode, plus changes how your agent approaches problems: engineer-first thinking, blunt corrections, build-before-theorize, explicit decision closure.
-- **Buddy mode** (`/rocky-buddy`) — Displays Rocky's ASCII art and a sarcastic one-liner greeting at session start.
+- **Buddy art** — Rocky's ASCII art and a one-liner appear automatically at session start and on key events (plan approval, task complete, errors) whenever talk or mind is active.
 
 All modes are OFF by default. You control what's active.
 
@@ -59,7 +59,6 @@ On first use, Claude Code will ask permission to run a small script that reads R
 |---------|-----------------|
 | `/rocky [on\|off]` | Full mode — talk style + engineering mind (asks for confirmation before activating) |
 | `/rocky-talk [on\|off]` | Talk style only (grammar, vocabulary, tone) |
-| `/rocky-buddy [on\|off]` | ASCII art companion at session start |
 | `/rocky-status` | Show current toggle states (displayed in Rocky voice if talk is on) |
 
 All commands accept `on`, `off`, or no argument (no argument toggles the current state).
@@ -104,7 +103,7 @@ Rocky:   "Rocky break problem into components. Three mechanisms involved.
 - **State**: Toggle state is stored in `~/.claude/rocky-state.json` — global, not per-project.
 - **Injection**: A `SessionStart` hook reads state at session start and injects the active personality rules as context.
 - **Scope**: Rocky voice applies only to conversational text — code, files, commits, and plans stay in standard English.
-- **Buddy**: When `/rocky-buddy` is on, Rocky's ASCII art and a one-liner greeting are injected into context at session start via a second `SessionStart` hook.
+- **Buddy art**: Rocky's ASCII art and a one-liner are injected automatically at session start and on key hook events (plan approval, task complete, tool failure) whenever talk or mind is active. No separate toggle needed.
 
 ## Character Reference
 

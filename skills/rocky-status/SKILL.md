@@ -28,8 +28,8 @@ Rocky Status
 ─────────────────────────
 Talk (chat style):     ON / OFF
 Mind (engineering):    ON / OFF
-Buddy (terminal art):  ON / OFF
 ─────────────────────────
+Buddy art: active when talk or mind is ON
 ```
 
 Use ON or OFF based on actual state.
@@ -39,7 +39,6 @@ Use ON or OFF based on actual state.
 Below the status table:
 - `/rocky [on|off]` — Toggle full mode (talk + mind)
 - `/rocky-talk [on|off]` — Toggle chat style only
-- `/rocky-buddy [on|off]` — Toggle terminal buddy
 
 ### 4. Voice rule
 
