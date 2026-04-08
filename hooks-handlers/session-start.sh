@@ -5,30 +5,19 @@
 # Talk rules: skills/rocky-talk/SKILL.md | Mind rules: skills/rocky/SKILL.md (single source of truth)
 # Extracted via <!-- RULES:START --> / <!-- RULES:END --> delimiters
 
-STATE_FILE="$HOME/.claude/rocky-state.json"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SKILLS_DIR="$SCRIPT_DIR/../skills"
 
-# Default: both modes off
-TALK=false
-MIND=false
+# shellcheck source=_lib.sh
+source "$SCRIPT_DIR/_lib.sh"
 
-# Read state file if it exists
-if [ -f "$STATE_FILE" ]; then
-  TALK=$(python3 -c "import json; d=json.load(open('$STATE_FILE')); print(str(d.get('talk', False)).lower())" 2>/dev/null || echo "false")
-  MIND=$(python3 -c "import json; d=json.load(open('$STATE_FILE')); print(str(d.get('mind', False)).lower())" 2>/dev/null || echo "false")
-fi
+# Read state
+TALK=$(get_rocky_state "talk")
+MIND=$(get_rocky_state "mind")
 
-# If neither mode is active, output minimal context and exit
+# If neither mode is active, exit with empty context
 if [ "$TALK" = "false" ] && [ "$MIND" = "false" ]; then
-  cat << 'EOF'
-{
-  "hookSpecificOutput": {
-    "hookEventName": "SessionStart",
-    "additionalContext": ""
-  }
-}
-EOF
+  output_hook_json "SessionStart" ""
   exit 0
 fi
 
@@ -83,16 +72,7 @@ ${MIND_RULES}
   fi
 fi
 
-# Escape the context for JSON output
-ESCAPED_CONTEXT=$(printf '%s' "$CONTEXT" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read())[1:-1])")
-
-cat << EOF
-{
-  "hookSpecificOutput": {
-    "hookEventName": "SessionStart",
-    "additionalContext": "${ESCAPED_CONTEXT}"
-  }
-}
-EOF
+ESCAPED_CONTEXT=$(printf '%s' "$CONTEXT" | escape_for_json)
+output_hook_json "SessionStart" "$ESCAPED_CONTEXT"
 
 exit 0

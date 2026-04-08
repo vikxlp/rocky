@@ -5,7 +5,9 @@
 
 EVENT_TYPE="${1:-unknown}"
 BUDDY_ART_FILE="${CLAUDE_PLUGIN_ROOT}/skills/rocky-buddy/companion.txt"
-STATE_FILE="$HOME/.claude/rocky-state.json"
+
+# shellcheck source=_lib.sh
+source "$(cd "$(dirname "$0")" && pwd)/_lib.sh"
 
 # Map short event names to valid Claude Code hook event names
 case "$EVENT_TYPE" in
@@ -16,15 +18,6 @@ case "$EVENT_TYPE" in
   *)       HOOK_EVENT_NAME="$EVENT_TYPE" ;;
 esac
 
-# Check if buddy is enabled
-check_buddy_enabled() {
-  if [ ! -f "$STATE_FILE" ]; then
-    return 1
-  fi
-
-  python3 -c "import json; d=json.load(open('$STATE_FILE')); exit(0 if d.get('buddy', False) else 1)" 2>/dev/null
-  return $?
-}
 
 # One-liner response collections
 declare -a PLAN_RESPONSES=(
@@ -158,32 +151,15 @@ display_buddy() {
 # Generate hook output JSON
 generate_hook_output() {
   local display=$(display_buddy)
-
-  # Escape for JSON
-  local escaped_display=$(printf '%s' "$display" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read())[1:-1])" 2>/dev/null || echo "$display")
-
-  cat << EOF
-{
-  "hookSpecificOutput": {
-    "hookEventName": "${HOOK_EVENT_NAME}",
-    "additionalContext": "${escaped_display}"
-  }
-}
-EOF
+  local escaped_display=$(printf '%s' "$display" | escape_for_json)
+  output_hook_json "$HOOK_EVENT_NAME" "$escaped_display"
 }
 
 # Main execution
 if check_buddy_enabled; then
   generate_hook_output
 else
-  cat << EOF
-{
-  "hookSpecificOutput": {
-    "hookEventName": "${HOOK_EVENT_NAME}",
-    "buddyEnabled": false
-  }
-}
-EOF
+  output_hook_json "$HOOK_EVENT_NAME" ""
 fi
 
 exit 0
