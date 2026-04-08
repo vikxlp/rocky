@@ -4,13 +4,14 @@ Rocky is a five-limbed, rock-skinned alien who learned English as a second langu
 
 ## What It Does
 
-Rocky is a personality plugin with three independent layers:
+Rocky is a personality plugin with two independent modes:
 
 - **Talk mode** (`/rocky-talk`) — Changes how your agent communicates: no articles, no contractions, "question?" tags, tripled emphasis, engineering vocabulary. Code output remains unchanged.
 - **Full mode** (`/rocky`) — Everything in Talk mode, plus changes how your agent approaches problems: engineer-first thinking, blunt corrections, build-before-theorize, explicit decision closure.
-- **Buddy art** — Rocky's ASCII art and a one-liner appear automatically at session start and on key events (plan approval, task complete, errors) whenever talk or mind is active.
 
-All modes are OFF by default. You control what's active.
+When either mode is active, Rocky's ASCII art companion appears automatically — at session start, when a plan is approved, when a task completes, and on errors. No separate toggle needed.
+
+Both modes are OFF by default. You control what's active.
 
 Rocky works with [Claude Code](https://claude.ai/code) and any other [AgentSkills](https://agentskills.io)-compatible coding agent (Cursor, GitHub Copilot, Gemini CLI, and more).
 
