@@ -25,9 +25,6 @@ check_buddy_enabled() {
   python3 -c "import json; d=json.load(open('$STATE_FILE')); exit(0 if d.get('buddy', False) else 1)" 2>/dev/null
   return $?
 }
-EOF
-  exit 0
-fi
 
 # One-liner response collections
 declare -a PLAN_RESPONSES=(
