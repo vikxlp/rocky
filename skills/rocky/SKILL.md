@@ -5,7 +5,7 @@ license: MIT
 compatibility: Skills directory works with any AgentSkills-compatible agent. State persistence across sessions requires Claude Code; other agents apply rules for the current session only.
 metadata:
   author: vikxlp
-  version: "1.1.0"
+  version: "1.2.0"
 allowed-tools: Bash
 ---
 
