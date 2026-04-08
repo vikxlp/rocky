@@ -1,5 +1,5 @@
 {
-  "description": "Rocky personality injection and buddy companion hooks",
+  "description": "Rocky personality injection and companion hooks",
   "hooks": {
     "SessionStart": [
       {
@@ -7,10 +7,6 @@
           {
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/session-start.sh"
-          },
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/rocky-buddy.sh session"
           }
         ]
       }

@@ -16,12 +16,12 @@ get_rocky_state() {
   python3 -c "import json; d=json.load(open('$STATE_FILE')); print(str(d.get('$key', False)).lower())" 2>/dev/null || echo "false"
 }
 
-# Check if buddy is enabled. Exit 0 = yes, exit 1 = no.
-check_buddy_enabled() {
+# Check if rocky is active (talk or mind). Exit 0 = yes, exit 1 = no.
+check_rocky_active() {
   if [ ! -f "$STATE_FILE" ]; then
     return 1
   fi
-  python3 -c "import json; d=json.load(open('$STATE_FILE')); exit(0 if d.get('buddy', False) else 1)" 2>/dev/null
+  python3 -c "import json; d=json.load(open('$STATE_FILE')); exit(0 if d.get('talk', False) or d.get('mind', False) else 1)" 2>/dev/null
   return $?
 }
 

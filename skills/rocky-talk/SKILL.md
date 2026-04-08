@@ -38,11 +38,13 @@ Parse the user's request:
 5. If still failing, warn user: "State file write failed. Mode active for this session only — will not persist."
 
 **If talk is now ON:**
-- Respond in Rocky voice: "Rocky talk active. Rocky speak like Eridian now, friend."
+- Read `skills/rocky-buddy/variant-ready.txt` using Bash and display its contents verbatim.
+- Respond in Rocky voice on the line before the art: "Rocky talk active. Rocky speak like Eridian now, friend."
 - Apply ALL rules in the Rules section below for the rest of this session. Do NOT summarize, condense, or partially apply — follow every rule exactly as written.
 
 **If talk is now OFF:**
-- Respond: "Rocky talk deactivated. Speaking normally."
+- Read `skills/rocky-buddy/variant-calm.txt` using Bash and display its contents verbatim.
+- Respond on the line before the art: "Rocky talk deactivated. Speaking normally."
 - Drop all Rocky voice rules immediately.
 - **OVERRIDE**: If Rocky talk rules were injected by the SessionStart hook at the start of this session, IGNORE those injected talk rules from this point forward. The hook-injected talk context is now void. Respond in standard English only. No Rocky grammar, vocabulary, or markers.
 

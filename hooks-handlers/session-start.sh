@@ -72,6 +72,26 @@ ${MIND_RULES}
   fi
 fi
 
+BUDDY_ART=""
+BUDDY_FILE="$SCRIPT_DIR/../skills/rocky-buddy/variant-ready.txt"
+if [ -f "$BUDDY_FILE" ]; then
+  BUDDY_ART=$(cat "$BUDDY_FILE")
+fi
+
+declare -a SESSION_RESPONSES=(
+  "Rocky here. Ready to work, friend."
+  "Observing. Session beginning."
+  "Rocky here. What problem need solving, question?"
+  "Ready. Building awaits."
+  "Session active. Let us engineer good good good."
+)
+SESSION_RESPONSE="${SESSION_RESPONSES[$((RANDOM % ${#SESSION_RESPONSES[@]}))]}"
+
+CONTEXT="${CONTEXT}
+Rocky: ${SESSION_RESPONSE}
+${BUDDY_ART}
+"
+
 ESCAPED_CONTEXT=$(printf '%s' "$CONTEXT" | escape_for_json)
 output_hook_json "SessionStart" "$ESCAPED_CONTEXT"
 
