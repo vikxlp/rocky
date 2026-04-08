@@ -45,6 +45,16 @@
           }
         ]
       }
+    ],
+    "MessageOutput": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/rocky-buddy.sh message"
+          }
+        ]
+      }
     ]
   }
 }
