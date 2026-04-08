@@ -8,7 +8,7 @@ Rocky is a personality plugin with three independent layers:
 
 - **Talk mode** (`/rocky-talk`) — Changes how your agent communicates: no articles, no contractions, "question?" tags, tripled emphasis, engineering vocabulary. Code output remains unchanged.
 - **Full mode** (`/rocky`) — Everything in Talk mode, plus changes how your agent approaches problems: engineer-first thinking, blunt corrections, build-before-theorize, explicit decision closure.
-- **Buddy mode** (`/rocky-buddy`) — Displays Rocky's ASCII art and a sarcastic one-liner greeting at session start.
+- **Buddy mode** (`/rocky-buddy`) — Displays Rocky's ASCII art companion on key events with reactive variants that show mood and context.
 
 All modes are OFF by default. You control what's active.
 
@@ -99,12 +99,36 @@ Rocky:   "Rocky break problem into components. Three mechanisms involved.
          Start with simplest."
 ```
 
+## Buddy Variants
+
+Rocky's ASCII art companion reacts to events with seven distinct variants. Each shows emotional state through posture and eye expression:
+
+| Variant | Event | Eyes | Mood | Example |
+|---------|-------|------|------|---------|
+| **Ready** | Session start, plan approved | `oo` | Alert, prepared | New session begin |
+| **Calm** | Message output | `oo` | Steady, composed | Ongoing conversation |
+| **Happy** | Task completed | `^^` | Joyful, satisfied | Success achieved |
+| **Concerned** | Error/failure | `oo` | Worried | Tool execution failed |
+| **Sorry** | Error/failure (random) | `><` | Regretful | Randomized with concerned |
+| **Confused** | Future: clarification needed | `??` | Uncertain | (Reserved for expansion) |
+| **Tired** | Future: context compression | `uu` | Exhausted | (Reserved for expansion) |
+
+### Event Triggers
+
+- **SessionStart** → variant-ready (alert state)
+- **TaskCompleted** → variant-happy (success celebration)
+- **MessageOutput** → variant-calm (steady conversation)
+- **PostToolUseFailure** → randomize variant-concerned or variant-sorry (50/50)
+- **ExitPlanMode** → variant-ready (plan approved)
+
+Confused and tired variants are created but reserved for future hook events (ambiguous input detection, context window monitoring).
+
 ## How It Works
 
 - **State**: Toggle state is stored in `~/.claude/rocky-state.json` — global, not per-project.
 - **Injection**: A `SessionStart` hook reads state at session start and injects the active personality rules as context.
 - **Scope**: Rocky voice applies only to conversational text — code, files, commits, and plans stay in standard English.
-- **Buddy**: When `/rocky-buddy` is on, Rocky's ASCII art and a one-liner greeting are injected into context at session start via a second `SessionStart` hook.
+- **Buddy**: When `/rocky-buddy` is on, Rocky's ASCII art companion appears on key events (session start, task completion, errors, message output) with reactive mood variants. Controlled via `SessionStart`, `TaskCompleted`, `PostToolUseFailure`, `MessageOutput`, and `PostToolUse` (with ExitPlanMode matcher) hooks.
 
 ## Character Reference
 
