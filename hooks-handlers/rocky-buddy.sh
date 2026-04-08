@@ -148,18 +148,9 @@ display_buddy() {
   echo ""
 }
 
-# Generate hook output JSON
-generate_hook_output() {
-  local display=$(display_buddy)
-  local escaped_display=$(printf '%s' "$display" | escape_for_json)
-  output_hook_json "$HOOK_EVENT_NAME" "$escaped_display"
-}
-
 # Main execution
 if check_buddy_enabled; then
-  generate_hook_output
-else
-  output_hook_json "$HOOK_EVENT_NAME" ""
+  display_buddy
 fi
 
 exit 0

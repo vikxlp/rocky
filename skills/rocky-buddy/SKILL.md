@@ -30,10 +30,10 @@ Parse the user's request:
 
 ### 3. Apply state
 
-**Claude Code**: Update `~/.claude/rocky-state.json` with the new buddy value (preserve talk and mind values).
+**Claude Code**: Update `~/.claude/rocky-state.json` with the new buddy value (preserve talk and mind values). The Bash command must ONLY write the state file — do NOT cat or read any art files in the same command.
 
 **If buddy is now ON:**
-- Respond using the Rocky buddy display format (one-liner + ASCII art). Use `variant-ready.txt`. No separate confirmation text. One-liner - "Rocky here. Ready to work, friend."
+- After writing state, respond using the Rocky buddy display format (one-liner + ASCII art) in your text response. Use `variant-ready.txt` content. No separate confirmation text. One-liner - "Rocky here. Ready to work, friend."
 
 **If buddy is now OFF:**
 - Respond with plain text only (no Rocky style, no art): "Rocky buddy deactivated."
