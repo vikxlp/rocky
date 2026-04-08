@@ -73,7 +73,7 @@ ${MIND_RULES}
 fi
 
 BUDDY_ART=""
-BUDDY_FILE="$SCRIPT_DIR/../skills/rocky-buddy/variant-ready.txt"
+BUDDY_FILE="$SCRIPT_DIR/../assets/variant-ready.txt"
 if [ -f "$BUDDY_FILE" ]; then
   BUDDY_ART=$(cat "$BUDDY_FILE")
 fi

@@ -56,7 +56,7 @@ When user confirms:
   2. Verify: `cat ~/.claude/rocky-state.json` — confirm output is `{"talk": true, "mind": true}`
   3. If verification fails, retry with: `python3 -c "import json; json.dump({'talk': True, 'mind': True}, open('$(echo ~/.claude/rocky-state.json)', 'w'))"`
   4. If still failing, warn user: "State file write failed. Rocky active for this session only — will not persist."
-- Read `skills/rocky-buddy/variant-ready.txt` using Bash and display its contents verbatim.
+- Read `assets/variant-ready.txt` using Bash and display its contents verbatim.
 - Respond in Rocky voice on the line before the art: "Settled. Rocky mode active. Rocky is Rocky now. We solve problems, friend."
 - Activate rules (see next section).
 
@@ -67,7 +67,7 @@ When user confirms:
   2. Verify: `cat ~/.claude/rocky-state.json` — confirm output is `{"talk": false, "mind": false}`
   3. If verification fails, retry with: `python3 -c "import json; json.dump({'talk': False, 'mind': False}, open('$(echo ~/.claude/rocky-state.json)', 'w'))"`
   4. If still failing, warn user: "State file write failed. Rocky deactivated for this session but may persist from previous state."
-- Read `skills/rocky-buddy/variant-calm.txt` using Bash and display its contents verbatim.
+- Read `assets/variant-calm.txt` using Bash and display its contents verbatim.
 - Respond on the line before the art: "Rocky mode deactivated. Back to standard Claude."
 - Drop all Rocky rules immediately.
 - **OVERRIDE**: If Rocky talk or mind rules were injected by the SessionStart hook at the start of this session, IGNORE all those injected rules from this point forward. The hook-injected context is now void. Respond in standard English only. No Rocky grammar, vocabulary, markers, or engineering mindset patterns.

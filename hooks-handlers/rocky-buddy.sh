@@ -4,7 +4,7 @@
 # Displays when talk or mind mode is active on plan ready, task complete, or error
 
 EVENT_TYPE="${1:-unknown}"
-VARIANTS_DIR="${CLAUDE_PLUGIN_ROOT}/skills/rocky-buddy"
+VARIANTS_DIR="${CLAUDE_PLUGIN_ROOT}/assets"
 
 # shellcheck source=_lib.sh
 source "$(cd "$(dirname "$0")" && pwd)/_lib.sh"

@@ -8,8 +8,8 @@ Rocky works through a **self-contained skills** design:
 
 - **Talk skill** (`skills/rocky-talk/SKILL.md`) — contains toggle logic AND full talk rules inline. Single source of truth for talk rules.
 - **Full skill** (`skills/rocky/SKILL.md`) — contains toggle logic AND full mind rules inline. Delegates to `/rocky-talk` for talk rules. Single source of truth for mind rules.
-- **Buddy skill** (`skills/rocky-buddy/SKILL.md`) — ASCII art terminal companion that appears on `SessionStart`. Independent from talk and mind modes.
-- **SessionStart hook** (`hooks-handlers/session-start.sh`) — reads state from `~/.claude/rocky-state.json` and extracts rules from the skill files (via `<!-- RULES:START/END -->` delimiters) to inject as `additionalContext`. This is the persistence layer.
+- **SessionStart hook** (`hooks-handlers/session-start.sh`) — reads state from `~/.claude/rocky-state.json` and extracts rules from the skill files (via `<!-- RULES:START/END -->` delimiters) to inject as `additionalContext`. Also appends Rocky ASCII art greeting when a mode is active. This is the persistence layer.
+- **Buddy hook** (`hooks-handlers/rocky-buddy.sh`) — fires on `TaskCompleted`, `PostToolUse(ExitPlanMode)`, and `PostToolUseFailure` when talk or mind is active. Outputs ASCII art via `additionalContext`.
 
 The hook handles persistence across sessions; the skills handle in-session toggling; the SKILL.md files are the single source of truth.
 
@@ -25,13 +25,14 @@ The hook handles persistence across sessions; the skills handle in-session toggl
 |------|---------|
 | `skills/rocky-talk/SKILL.md` | **CANONICAL** — Talk toggle + inline talk rules (single source of truth for talk) |
 | `skills/rocky/SKILL.md` | **CANONICAL** — Full mode toggle + inline mind rules (single source of truth for mind) |
-| `skills/rocky-buddy/SKILL.md` | Buddy toggle — ASCII art companion on SessionStart |
-| `skills/rocky-buddy/companion.txt` | Rocky ASCII art |
-| `skills/rocky-buddy/rocky-buddy.sh` | Buddy state toggle handler |
 | `skills/rocky-status/SKILL.md` | `/rocky-status` — show current state |
-| `hooks-handlers/session-start.sh` | Engine — reads state, extracts rules from SKILL.md files, injects context |
-| `hooks-handlers/rocky-buddy.sh` | Buddy display handler — fires on SessionStart when buddy is enabled |
-| `hooks/hooks.json` | Registers the SessionStart hook (personality + buddy) |
+| `assets/variant-ready.txt` | Rocky ASCII art — session start / mode enable |
+| `assets/variant-calm.txt` | Rocky ASCII art — task complete / plan approved / mode disable |
+| `assets/variant-concerned.txt` | Rocky ASCII art — tool failure / error |
+| `assets/companion.txt` | Rocky ASCII art — fallback |
+| `hooks-handlers/session-start.sh` | Engine — reads state, extracts rules from SKILL.md files, injects context + art |
+| `hooks-handlers/rocky-buddy.sh` | Art display handler — fires on task/plan/error events when rocky is active |
+| `hooks/hooks.json` | Registers all hooks (SessionStart, TaskCompleted, PostToolUse, PostToolUseFailure) |
 | `.claude-plugin/plugin.json` | Plugin manifest (name, version, author) |
 
 ## Editing Rules
@@ -48,7 +49,7 @@ No propagation needed. The hook extracts from these same files via the delimiter
 State is stored globally at `~/.claude/rocky-state.json`:
 
 ```json
-{ "talk": false, "mind": false, "buddy": false }
+{ "talk": false, "mind": false }
 ```
 
 Defaults to both `false` if the file is missing. Parsed using `python3` in the hook (Claude Code will prompt to allow this on first run — approve it).
@@ -58,12 +59,8 @@ Defaults to both `false` if the file is missing. Parsed using `python3` in the h
 Skills (`SKILL.md`) take effect immediately on next invocation. Hook changes (`session-start.sh`) require a **new Claude Code session** to take effect.
 
 To test end-to-end:
-1. Enable a mode: `/rocky-talk on`
-2. Start a new session to verify the hook injects the rule correctly
+1. Enable a mode: `/rocky-talk on` — ASCII art should appear in the response
+2. Start a new session to verify the hook injects rules + art correctly
 3. Check `/rocky-status` shows expected state
 4. Verify conversational responses match Rocky style but code output remains normal English
-
-To test buddy:
-1. `/rocky-buddy on`
-2. Start a new session — Rocky ASCII art + greeting should appear via `additionalContext`
-3. `/rocky-buddy off` — no ASCII art on next session start
+5. Trigger hook events: approve a plan, cause a tool failure — art should appear via `additionalContext`
